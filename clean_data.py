@@ -47,7 +47,6 @@ def remove_paragraph_tags(line):
     fixupcontent = line[4]
     clean = re.compile(r'<.*?>')
     fixupcontent1 = re.sub(clean, '', fixupcontent)
-    fixupcontent1 = str(fixupcontent1)
     emoji_pattern = re.compile("["
     u"\U0001F600-\U0001F64F" # emoticons
     u"\U0001F300-\U0001F5FF"  # symbols & pictographs
