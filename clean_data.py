@@ -53,7 +53,7 @@ def remove_paragraph_tags(line):
     u"\U0001F680-\U0001F6FF"  # transport & map symbols
     u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
     "]+", flags=re.UNICODE)
-    fixupcontent = (emoji_pattern.sub(r'', fixupcontent1))
+    fixupcontent = (emoji_pattern.sub(r'', str(fixupcontent1)))
     return line[0], line[1], line[2], line[3], fixupcontent, line[5], line[6], line[7], line[8], line[9], line[10], line[11], line[12], line[13], line[14], line[15], line[16], line[17], line[18], line[19]
 
 
