@@ -45,17 +45,17 @@ takeline.take(3)
 #remove html tags and other weird emojis in "message" content
 def remove_paragraph_tags(line):
     fixupcontent = line[4]
-    clean = re.compile(r'<.*?>')
-    fixupcontent1 = re.sub(clean, '', fixupcontent)
-    emoji_pattern = re.compile("["
-    u"\U0001F600-\U0001F64F" # emoticons
-    u"\U0001F300-\U0001F5FF"  # symbols & pictographs
-    u"\U0001F680-\U0001F6FF"  # transport & map symbols
-    u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
-    "]+", flags=re.UNICODE)
-    fixupcontent = (emoji_pattern.sub(r'', fixupcontent1))
     fixupcontent = str(fixupcontent)
-    return line[0], line[1], line[2], line[3], fixupcontent, line[5], line[6], line[7], line[8], line[9], line[10], line[11], line[12], line[13], line[14], line[15], line[16], line[17], line[18], line[19]
+    clean = re.compile(r'<.*?>')
+    fixupcontent1 = re.sub(clean, '', str(fixupcontent))
+    #emoji_pattern = re.compile("["
+    #u"\U0001F600-\U0001F64F" # emoticons
+    #u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+    #u"\U0001F680-\U0001F6FF"  # transport & map symbols
+    #u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+    #"]+", flags=re.UNICODE)
+    #fixupcontent2 = (emoji_pattern.sub(r'', str(fixupcontent1)))
+    return line[0], line[1], line[2], line[3], str(fixupcontent1), line[5], line[6], line[7], line[8], line[9], line[10], line[11], line[12], line[13], line[14], line[15], line[16], line[17], line[18], line[19]
 
 
 remove_tags = takeline.map(remove_paragraph_tags)
@@ -66,9 +66,11 @@ remove_tags.take(1)
 #make "created" and "updated" datetime objects
 def fix_time(line):
     created_time = line[6]
+    created_time = str(created_time)
     strip_create_time = created_time[:10]
     datetime_create = datetime.datetime.strptime(strip_create_time, '%Y-%m-%d')
     update_time = line[7]
+    update_time = str(update_time)
     strip_update_time = update_time[:10]
     datetime_update = datetime.datetime.strptime(strip_update_time, '%Y-%m-%d')
     
@@ -81,6 +83,7 @@ fix_time.take(1)
 #taking the brackets out of the image col
 def images_column(line):
     image_url = line[9]
+    image_url = str(image_url)
     cleanstart = "{"
     cleanend = "}"
     quote = '"'
@@ -88,9 +91,9 @@ def images_column(line):
       image_url = image_url.replace(cleanstart, '')
       image_url = image_url.replace(cleanend, '')
       image_url = image_url.replace(quote, '')
-      return line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8], image_url, line[10], line[11], line[12], line[13], line[14], line[15], line[16], line[17], line[18], line[19]
+      return line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8], str(image_url), line[10], line[11], line[12], line[13], line[14], line[15], line[16], line[17], line[18], line[19]
 
-image_col = fix_time.map(images_column)
+image_col = remove_tags.map(images_column)
 image_col.take(1)  
 
 
@@ -107,9 +110,21 @@ def target_col(line):
           
 
 target = image_col.map(target_col)
-target.take(2)              
+target.take(2)
 
-###########################
+
+
+def mapper(line):
+    return line[18], 1
+
+
+def addFunc(left, right):
+    return left + right
+
+  
+target2 = target.map(mapper).reduceByKey(addFunc)
+target2.take(2)  
+############################################################3
 
 result = isinstance(dictline, dict)
  
