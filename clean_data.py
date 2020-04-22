@@ -62,22 +62,66 @@ remove_tags = takeline.map(remove_paragraph_tags)
 remove_tags.take(1)
 
 
-
 #make "created" and "updated" datetime objects
 def fix_time(line):
     created_time = line[6]
-    created_time = str(created_time)
+    html = "<"
+    url = "https://pp"
+    en = "en-US" 
+    weirdnum = '0.74362338'
+    weirdnum1 = 'we become'
+    if created_time is None:
+            created_time = '2021-01-01'
+    if html or url in created_time:
+            created_time = '2021-01-01'
+    if url in created_time:
+            created_time = '2021-01-01'
+    if en in created_time:
+            created_time = '2021-01-01' 
+    if weirdnum or weirdnum1 in created_time:
+            created_time = '2021-01-01'    
+    else:
+            created_time = str(created_time)
     strip_create_time = created_time[:10]
     datetime_create = datetime.datetime.strptime(strip_create_time, '%Y-%m-%d')
+    #return line[0], line[1], line[2], line[3], line[4], line[5], datetime_create, line[7], line[8], line[9], line[10], line[11], line[12], line[13], line[14], line[15], line[16], line[17], line[18], line[19]
     update_time = line[7]
-    update_time = str(update_time)
+    if update_time is None:
+            update_time = '2021-01-01'
+    if html in update_time:
+            update_time = '2021-01-01'
+    if url in update_time:
+            update_time = '2021-01-01'   
+    if en in update_time:
+            update_time = '2021-01-01'
+    if weirdnum or weirdnum1 in update_time:
+            update_time = '2021-01-01'       
+    else:
+            update_time = str(update_time)
     strip_update_time = update_time[:10]
     datetime_update = datetime.datetime.strptime(strip_update_time, '%Y-%m-%d')
-    
     return line[0], line[1], line[2], line[3], line[4], line[5], datetime_create, datetime_update, line[8], line[9], line[10], line[11], line[12], line[13], line[14], line[15], line[16], line[17], line[18], line[19]
 
-fix_time = remove_tags.map(fix_time)
-fix_time.take(1)
+
+fixtime = remove_tags.map(fix_time)
+fixtime.take(4)
+
+def fixline(line):
+    paid = line[18]
+    div = "<div>"
+    url = "https://pp"
+    if paid is None:
+            paid = "NA"
+    if div in paid:
+            paid = "NA"  
+    if url in paid:
+            paid = "NA"    
+    else:
+            paid = paid
+    return line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8], line[9], line[10], line[11], line[12], line[13], line[14], line[15], line[16], line[17], paid, line[19]
+
+fixline = fixtime.map(fixline)
+fixline.take(10)
 
 
 #taking the brackets out of the image col
@@ -93,7 +137,7 @@ def images_column(line):
       image_url = image_url.replace(quote, '')
       return line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8], str(image_url), line[10], line[11], line[12], line[13], line[14], line[15], line[16], line[17], line[18], line[19]
 
-image_col = remove_tags.map(images_column)
+image_col = fixline.map(images_column)
 image_col.take(1)  
 
 
