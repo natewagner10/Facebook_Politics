@@ -48,13 +48,13 @@ def remove_paragraph_tags(line):
     fixupcontent = str(fixupcontent)
     clean = re.compile(r'<.*?>')
     fixupcontent1 = re.sub(clean, '', str(fixupcontent))
-    #emoji_pattern = re.compile("["
-    #u"\U0001F600-\U0001F64F" # emoticons
-    #u"\U0001F300-\U0001F5FF"  # symbols & pictographs
-    #u"\U0001F680-\U0001F6FF"  # transport & map symbols
-    #u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
-    #"]+", flags=re.UNICODE)
-    #fixupcontent2 = (emoji_pattern.sub(r'', str(fixupcontent1)))
+    emoji_pattern = re.compile("["
+    u"\U0001F600-\U0001F64F" # emoticons
+    u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+    u"\U0001F680-\U0001F6FF"  # transport & map symbols
+    u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+    "]+", flags=re.UNICODE)
+    fixupcontent2 = (emoji_pattern.sub(r'', str(fixupcontent1)))
     return line[0], line[1], line[2], line[3], str(fixupcontent1), line[5], line[6], line[7], line[8], line[9], line[10], line[11], line[12], line[13], line[14], line[15], line[16], line[17], line[18], line[19]
 
 
@@ -62,49 +62,50 @@ remove_tags = takeline.map(remove_paragraph_tags)
 remove_tags.take(1)
 
 
-#make "created" and "updated" datetime objects
 def fix_time(line):
     created_time = line[6]
     html = "<"
-    url = "https://pp"
+    url = "pp-facebook-ads"
     en = "en-US" 
     weirdnum = '0.74362338'
     weirdnum1 = 'we become'
     if created_time is None:
-            created_time = '2021-01-01'
-    if html or url in created_time:
-            created_time = '2021-01-01'
-    if url in created_time:
-            created_time = '2021-01-01'
-    if en in created_time:
-            created_time = '2021-01-01' 
-    if weirdnum or weirdnum1 in created_time:
-            created_time = '2021-01-01'    
-    else:
-            created_time = str(created_time)
+        created_time = '2021-01-01'
+    if url in created_time or en in created_time or weirdnum in created_time or weirdnum1 in created_time or html in created_time:
+        created_time = '2021-01-01'
+    else:    
+        created_time = str(created_time)
     strip_create_time = created_time[:10]
     datetime_create = datetime.datetime.strptime(strip_create_time, '%Y-%m-%d')
-    #return line[0], line[1], line[2], line[3], line[4], line[5], datetime_create, line[7], line[8], line[9], line[10], line[11], line[12], line[13], line[14], line[15], line[16], line[17], line[18], line[19]
+    return line[0], line[1], line[2], line[3], line[4], line[5], datetime_create, line[7], line[8], line[9], line[10], line[11], line[12], line[13], line[14], line[15], line[16], line[17], line[18], line[19]
+
+fix1 = remove_tags.map(fix_time)
+
+#make "created" and "updated" datetime objects
+
+#fix = remove_tags.map(fix_time)
+#fix.take(2)  
+
+def fix_time1(line):
+    html = "<"
+    url = "pp-facebook-ads"
+    en = "en-US" 
+    weirdnum = '0.74362338'
+    weirdnum1 = 'we become'
     update_time = line[7]
     if update_time is None:
             update_time = '2021-01-01'
-    if html in update_time:
+    if html in update_time or url in update_time or en in update_time or weirdnum in update_time or weirdnum1 in update_time:
             update_time = '2021-01-01'
-    if url in update_time:
-            update_time = '2021-01-01'   
-    if en in update_time:
-            update_time = '2021-01-01'
-    if weirdnum or weirdnum1 in update_time:
-            update_time = '2021-01-01'       
     else:
             update_time = str(update_time)
     strip_update_time = update_time[:10]
     datetime_update = datetime.datetime.strptime(strip_update_time, '%Y-%m-%d')
-    return line[0], line[1], line[2], line[3], line[4], line[5], datetime_create, datetime_update, line[8], line[9], line[10], line[11], line[12], line[13], line[14], line[15], line[16], line[17], line[18], line[19]
+    return line[0], line[1], line[2], line[3], line[4], line[5], line[6], datetime_update, line[8], line[9], line[10], line[11], line[12], line[13], line[14], line[15], line[16], line[17], line[18], line[19]
 
 
-fixtime = remove_tags.map(fix_time)
-fixtime.take(4)
+fixtime1 = fix1.map(fix_time1)
+fixtime1.take(4)
 
 def fixline(line):
     paid = line[18]
