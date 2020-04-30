@@ -10,10 +10,10 @@ import re
 import pandas as pd
 import datetime
 from datetime import date
-sc = pyspark.SparkContext()
-sql = SQLContext(sc)
+#sc = pyspark.SparkContext()
+#sql = SQLContext(sc)
 
-my_df = spark.read.csv("/usr/data/facebook/fbpac-ads-en-US.csv", header = True, inferSchema = True, quote = "\"", escape = "\"")
+my_df = spark.read.csv("/spring2020/data/fbpac-ads-en-US.csv", header = True, inferSchema = True, quote = "\"", escape = "\"")
 df1 = my_df.drop('html')
 df2 = df1.drop('targetings').drop('targeting').drop('targetedness')
 df2.show(1)
