@@ -191,30 +191,43 @@ target2 = target.map(mapper).reduceByKey(addFunc)
 target2.take(2)  
 
 def cleanTarget(line):
+    #try:        
     if line[13] != 'NA':
         tar = line[13]
-        tar = tar.replace("{", '')
-        tar = tar.replace("}", '')
+        tar = tar.replace("]", '')
+        tar = tar.replace("[", '')
         tar = tar.replace("target", '')
         tar = tar.replace("segment", '')
         tar = tar.replace(":", '')
         tar = tar.replace('"', '')
-        tar = tar.replace(']', '')
-        tar = tar.replace('[', '')
+        tar = tar.replace('}', '')
+        tar = tar.replace('{', '')
         tar = tar.replace(',', '')
         tar = tar.replace(')', '')
         tar = tar.replace('(', '')
-        tar = tar.split(' ')
+        #tar = tar.split(' ')
         target_words = []
-        for i in tar.split(' '):
-            if i != '':
+        tar = tar.split(' ')
+        targets = ['women', 'female', 'male', 'men', 'white', 'african', 'liberal', 'conservative', 'females', 'males']
+        for i in tar:
+            if i != '' and i.lower() in targets:
                 target_words.append(i)
+            else:
+                continue
+        if target_words == []:
+            return line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8], line[9], line[10], line[11], line[12], 'NA', line[14], line[15], line[16], line[17], line[18], line[19]
         return line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8], line[9], line[10], line[11], line[12], target_words, line[14], line[15], line[16], line[17], line[18], line[19]
     else:
-        return line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8], line[9], line[10], line[11], line[12], line[13], line[14], line[15], line[16], line[17], line[18], line[19]
+        return line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8], line[9], line[10], line[11], line[12], 'NA', line[14], line[15], line[16], line[17], line[18], line[19]
+#except:
+#        return line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8], line[9], line[10], line[11], line[12], 'NA', line[14], line[15], line[16], line[17], line[18], line[19]
       
-
+      
 target_2 = target.map(cleanTarget)
+target_2.take(20)[19][13]
+test = target_2.filter(lambda x: x[13] != 'NA')
+test.take(20)[0][13]
+target_2.filter(lambda x: x[13] != 'NA').count()
 ####################################################################################333
 
 result = isinstance(dictline, dict)
